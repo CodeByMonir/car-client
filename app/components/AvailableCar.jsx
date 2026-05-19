@@ -1,4 +1,3 @@
-// components/sections/AvailableCars.jsx
 "use client";
 
 import { useState, useEffect } from "react";
@@ -20,124 +19,124 @@ export default function AvailableCars() {
 
     // Mock data - Replace with your actual API call
     useEffect(() => {
-        // Simulating database fetch
         const fetchCars = async () => {
             setLoading(true);
-            // In production, replace with: const response = await fetch('/api/cars')
-            const mockCars = [
-                {
-                    id: 1,
-                    title: "Tesla Model 3",
-                    brand: "Tesla",
-                    pricePerDay: 89,
-                    location: "New York, NY",
-                    seats: 5,
-                    transmission: "Automatic",
-                    fuelType: "Electric",
-                    imageUrl:
-                        "https://images.unsplash.com/photo-1560958089-b8a1929cea89?w=400&h=300&fit=crop",
-                    year: 2023,
-                    rating: 4.9,
-                },
-                {
-                    id: 2,
-                    title: "BMW X5",
-                    brand: "BMW",
-                    pricePerDay: 120,
-                    location: "Los Angeles, CA",
-                    seats: 5,
-                    transmission: "Automatic",
-                    fuelType: "Petrol",
-                    imageUrl:
-                        "https://images.unsplash.com/photo-1555215695-3004980ad54e?w=400&h=300&fit=crop",
-                    year: 2023,
-                    rating: 4.8,
-                },
-                {
-                    id: 3,
-                    title: "Mercedes-Benz C-Class",
-                    brand: "Mercedes",
-                    pricePerDay: 110,
-                    location: "Miami, FL",
-                    seats: 5,
-                    transmission: "Automatic",
-                    fuelType: "Petrol",
-                    imageUrl:
-                        "https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?w=400&h=300&fit=crop",
-                    year: 2022,
-                    rating: 4.7,
-                },
-                {
-                    id: 4,
-                    title: "Audi Q7",
-                    brand: "Audi",
-                    pricePerDay: 135,
-                    location: "Chicago, IL",
-                    seats: 7,
-                    transmission: "Automatic",
-                    fuelType: "Diesel",
-                    imageUrl:
-                        "https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?w=400&h=300&fit=crop",
-                    year: 2023,
-                    rating: 4.9,
-                },
-                {
-                    id: 5,
-                    title: "Toyota Camry",
-                    brand: "Toyota",
-                    pricePerDay: 65,
-                    location: "Houston, TX",
-                    seats: 5,
-                    transmission: "Automatic",
-                    fuelType: "Hybrid",
-                    imageUrl:
-                        "https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?w=400&h=300&fit=crop",
-                    year: 2023,
-                    rating: 4.6,
-                },
-                {
-                    id: 6,
-                    title: "Ford Mustang",
-                    brand: "Ford",
-                    pricePerDay: 95,
-                    location: "Las Vegas, NV",
-                    seats: 4,
-                    transmission: "Manual",
-                    fuelType: "Petrol",
-                    imageUrl:
-                        "https://images.unsplash.com/photo-1584345604476-8ec5e12e42dd?w=400&h=300&fit=crop",
-                    year: 2022,
-                    rating: 4.8,
-                },
-                {
-                    id: 7,
-                    title: "Honda CR-V",
-                    brand: "Honda",
-                    pricePerDay: 75,
-                    location: "Seattle, WA",
-                    seats: 5,
-                    transmission: "Automatic",
-                    fuelType: "Hybrid",
-                    imageUrl:
-                        "https://images.unsplash.com/photo-1607860108855-64acf2078ed9?w=400&h=300&fit=crop",
-                    year: 2023,
-                    rating: 4.7,
-                },
-                {
-                    id: 8,
-                    title: "Porsche 911",
-                    brand: "Porsche",
-                    pricePerDay: 250,
-                    location: "San Francisco, CA",
-                    seats: 4,
-                    transmission: "Automatic",
-                    fuelType: "Petrol",
-                    imageUrl:
-                        "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=400&h=300&fit=crop",
-                    year: 2023,
-                    rating: 5.0,
-                },
-            ];
+            const response = await fetch('http://localhost:4000/cars')
+            const mockCars = await response.json();
+            // const mockCars = [
+            //     {
+            //         id: 1,
+            //         title: "Tesla Model 3",
+            //         brand: "Tesla",
+            //         pricePerDay: 89,
+            //         location: "New York, NY",
+            //         seats: 5,
+            //         transmission: "Automatic",
+            //         fuelType: "Electric",
+            //         imageUrl:
+            //             "https://images.unsplash.com/photo-1560958089-b8a1929cea89?w=400&h=300&fit=crop",
+            //         year: 2023,
+            //         rating: 4.9,
+            //     },
+            //     {
+            //         id: 2,
+            //         title: "BMW X5",
+            //         brand: "BMW",
+            //         pricePerDay: 120,
+            //         location: "Los Angeles, CA",
+            //         seats: 5,
+            //         transmission: "Automatic",
+            //         fuelType: "Petrol",
+            //         imageUrl:
+            //             "https://images.unsplash.com/photo-1555215695-3004980ad54e?w=400&h=300&fit=crop",
+            //         year: 2023,
+            //         rating: 4.8,
+            //     },
+            //     {
+            //         id: 3,
+            //         title: "Mercedes-Benz C-Class",
+            //         brand: "Mercedes",
+            //         pricePerDay: 110,
+            //         location: "Miami, FL",
+            //         seats: 5,
+            //         transmission: "Automatic",
+            //         fuelType: "Petrol",
+            //         imageUrl:
+            //             "https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?w=400&h=300&fit=crop",
+            //         year: 2022,
+            //         rating: 4.7,
+            //     },
+            //     {
+            //         id: 4,
+            //         title: "Audi Q7",
+            //         brand: "Audi",
+            //         pricePerDay: 135,
+            //         location: "Chicago, IL",
+            //         seats: 7,
+            //         transmission: "Automatic",
+            //         fuelType: "Diesel",
+            //         imageUrl:
+            //             "https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?w=400&h=300&fit=crop",
+            //         year: 2023,
+            //         rating: 4.9,
+            //     },
+            //     {
+            //         id: 5,
+            //         title: "Toyota Camry",
+            //         brand: "Toyota",
+            //         pricePerDay: 65,
+            //         location: "Houston, TX",
+            //         seats: 5,
+            //         transmission: "Automatic",
+            //         fuelType: "Hybrid",
+            //         imageUrl:
+            //             "https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?w=400&h=300&fit=crop",
+            //         year: 2023,
+            //         rating: 4.6,
+            //     },
+            //     {
+            //         id: 6,
+            //         title: "Ford Mustang",
+            //         brand: "Ford",
+            //         pricePerDay: 95,
+            //         location: "Las Vegas, NV",
+            //         seats: 4,
+            //         transmission: "Manual",
+            //         fuelType: "Petrol",
+            //         imageUrl:
+            //             "https://images.unsplash.com/photo-1584345604476-8ec5e12e42dd?w=400&h=300&fit=crop",
+            //         year: 2022,
+            //         rating: 4.8,
+            //     },
+            //     {
+            //         id: 7,
+            //         title: "Honda CR-V",
+            //         brand: "Honda",
+            //         pricePerDay: 75,
+            //         location: "Seattle, WA",
+            //         seats: 5,
+            //         transmission: "Automatic",
+            //         fuelType: "Hybrid",
+            //         imageUrl:
+            //             "https://images.unsplash.com/photo-1607860108855-64acf2078ed9?w=400&h=300&fit=crop",
+            //         year: 2023,
+            //         rating: 4.7,
+            //     },
+            //     {
+            //         id: 8,
+            //         title: "Porsche 911",
+            //         brand: "Porsche",
+            //         pricePerDay: 250,
+            //         location: "San Francisco, CA",
+            //         seats: 4,
+            //         transmission: "Automatic",
+            //         fuelType: "Petrol",
+            //         imageUrl:
+            //             "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=400&h=300&fit=crop",
+            //         year: 2023,
+            //         rating: 5.0,
+            //     },
+            // ];
             setTimeout(() => {
                 setCars(mockCars);
                 setLoading(false);
@@ -189,9 +188,9 @@ export default function AvailableCars() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {cars.slice(0, 6).map((car) => (
+                    {cars?.slice(0, 3).map((car) => (
                         <div
-                            key={car.id}
+                            key={car._id}
                             className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1"
                         >
                             <div className="relative h-48 overflow-hidden">
