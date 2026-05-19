@@ -1,31 +1,26 @@
+// components/layouts/Navbar.jsx
 "use client";
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { useSession, signOut } from "@/lib/auth-client";
 
 export default function Navbar() {
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [userName, setUserName] = useState("");
+    const { data: session, isPending } = useSession();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const pathname = usePathname();
     const router = useRouter();
 
-    // Check login status on component mount
-    useEffect(() => {
-        const token = localStorage.getItem("authToken");
-        const name = localStorage.getItem("userName");
-        if (token) {
-            setIsLoggedIn(true);
-            setUserName(name || "User");
-        }
-    }, []);
+    // Get user info from session
+    const isLoggedIn = !!session;
+    const userName = session?.user?.name || "";
+    const userEmail = session?.user?.email || "";
+    const userImage = session?.user?.image || "";
 
-    const handleLogout = () => {
-        localStorage.removeItem("authToken");
-        localStorage.removeItem("userName");
-        setIsLoggedIn(false);
+    const handleLogout = async () => {
+        await signOut();
         setIsDropdownOpen(false);
         router.push("/");
     };
@@ -37,8 +32,29 @@ export default function Navbar() {
 
     const isActive = (path) => pathname === path;
 
+    // Show loading state while checking session
+    if (isPending) {
+        return (
+            <nav className="bg-white shadow-lg w-full">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="flex justify-between items-center h-16">
+                        <div className="shrink-0">
+                            <Link href="/" className="flex items-center space-x-2">
+                                <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                                    <span className="text-white font-bold text-xl">C</span>
+                                </div>
+                                <span className="font-bold text-xl text-gray-800">CarRental</span>
+                            </Link>
+                        </div>
+                        <div className="w-24 h-8 bg-gray-200 rounded animate-pulse"></div>
+                    </div>
+                </div>
+            </nav>
+        );
+    }
+
     return (
-        <nav className="bg-white/10 backdrop-blur-sm shadow-lg w-full">
+        <nav className="bg-white shadow-lg w-full">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center h-16">
                     {/* Logo */}
@@ -51,6 +67,7 @@ export default function Navbar() {
                         </Link>
                     </div>
 
+                    {/* Desktop Navigation Links */}
                     <div className="hidden md:flex items-center space-x-8">
                         {navLinks.map((link) => (
                             <Link
@@ -66,14 +83,12 @@ export default function Navbar() {
                         ))}
                     </div>
 
-                    {/* Desktop Navigation */}
-                    <div className="hidden md:flex items-center space-x-8">
-
-
+                    {/* Desktop Auth Section */}
+                    <div className="hidden md:flex items-center space-x-4">
                         {/* Conditional Rendering based on login status */}
                         {isLoggedIn ? (
                             // Logged In: Show Add Car and Profile Dropdown
-                            <div className="flex items-center space-x-4">
+                            <>
                                 <Link
                                     href="/add-car"
                                     className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200"
@@ -87,13 +102,21 @@ export default function Navbar() {
                                         onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                                         className="flex items-center space-x-2 focus:outline-none"
                                     >
-                                        <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
-                                            <span className="text-gray-700 font-semibold">
-                                                {userName.charAt(0).toUpperCase()}
-                                            </span>
-                                        </div>
+                                        {userImage ? (
+                                            <img
+                                                src={userImage}
+                                                alt={userName}
+                                                className="w-8 h-8 rounded-full object-cover"
+                                            />
+                                        ) : (
+                                            <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center">
+                                                <span className="text-white font-semibold">
+                                                    {userName?.charAt(0)?.toUpperCase() || "U"}
+                                                </span>
+                                            </div>
+                                        )}
                                         <span className="text-gray-700 hidden lg:block">
-                                            {userName}
+                                            {userName?.split(" ")[0] || "User"}
                                         </span>
                                         <svg
                                             className={`w-4 h-4 text-gray-600 transition-transform duration-200 ${isDropdownOpen ? "rotate-180" : ""
@@ -122,10 +145,10 @@ export default function Navbar() {
                                                 <div className="py-2">
                                                     <div className="px-4 py-3 border-b border-gray-100">
                                                         <p className="text-sm font-medium text-gray-900">
-                                                            {userName}
+                                                            {userName || "User"}
                                                         </p>
                                                         <p className="text-xs text-gray-500 truncate">
-                                                            {userName}@example.com
+                                                            {userEmail || "user@example.com"}
                                                         </p>
                                                     </div>
 
@@ -218,7 +241,7 @@ export default function Navbar() {
                                         </>
                                     )}
                                 </div>
-                            </div>
+                            </>
                         ) : (
                             // Not Logged In: Show Login/Register buttons
                             <div className="flex items-center space-x-3">
@@ -323,17 +346,17 @@ export default function Navbar() {
                                     </button>
                                 </>
                             ) : (
-                                <div className="flex space-x-3 px-2">
+                                    <div className="flex flex-col space-y-2 px-2">
                                     <Link
                                         href="/login"
-                                        className="flex-1 text-center text-gray-700 hover:text-blue-600 px-2 py-1"
+                                            className="text-center text-gray-700 hover:text-blue-600 px-4 py-2 border border-gray-300 rounded-lg"
                                         onClick={() => setIsMobileMenuOpen(false)}
                                     >
                                         Login
                                     </Link>
                                     <Link
                                         href="/register"
-                                        className="flex-1 text-center bg-blue-600 text-white px-4 py-2 rounded-lg"
+                                            className="text-center bg-blue-600 text-white px-4 py-2 rounded-lg"
                                         onClick={() => setIsMobileMenuOpen(false)}
                                     >
                                         Register
