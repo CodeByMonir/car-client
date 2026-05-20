@@ -10,8 +10,14 @@ export default function Navbar() {
     const { data: session, isPending } = useSession();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [isHydrated, setIsHydrated] = useState(false);
     const pathname = usePathname();
     const router = useRouter();
+
+    // Ensure hydration matches by waiting until component is mounted on client
+    useEffect(() => {
+        setIsHydrated(true);
+    }, []);
 
     // Get user info from session
     const isLoggedIn = !!session;
@@ -32,8 +38,8 @@ export default function Navbar() {
 
     const isActive = (path) => pathname === path;
 
-    // Show loading state while checking session
-    if (isPending) {
+    // Show loading state while checking session (only after hydration to prevent mismatch)
+    if (isPending && isHydrated) {
         return (
             <nav className="bg-white shadow-lg w-full">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -109,7 +115,7 @@ export default function Navbar() {
                                                 className="w-8 h-8 rounded-full object-cover"
                                             />
                                         ) : (
-                                            <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center">
+                                                <div className="w-8 h-8 bg-linear-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center">
                                                 <span className="text-white font-semibold">
                                                     {userName?.charAt(0)?.toUpperCase() || "U"}
                                                 </span>

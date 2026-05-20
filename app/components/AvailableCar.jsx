@@ -12,6 +12,7 @@ import {
 } from "react-icons/fa";
 import { MdElectricCar } from "react-icons/md";
 import { GiGearStickPattern } from "react-icons/gi";
+import CarCard from "./CarCard";
 
 export default function AvailableCars() {
     const [cars, setCars] = useState([]);
@@ -189,72 +190,7 @@ export default function AvailableCars() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {cars?.slice(0, 3).map((car) => (
-                        <div
-                            key={car._id}
-                            className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1"
-                        >
-                            <div className="relative h-48 overflow-hidden">
-                                <img
-                                    src={car.imageUrl}
-                                    alt={car.title}
-                                    className="w-full h-full object-cover hover:scale-110 transition-transform duration-300"
-                                />
-                                <div className="absolute top-3 right-3 bg-yellow-400 text-blue-900 px-2 py-1 rounded-lg text-sm font-bold">
-                                    ⭐ {car.rating}
-                                </div>
-                            </div>
-
-                            <div className="p-6">
-                                <div className="flex justify-between items-start mb-3">
-                                    <div>
-                                        <h3 className="text-xl font-bold text-gray-900">
-                                            {car.title}
-                                        </h3>
-                                        <p className="text-gray-600 text-sm">{car.brand}</p>
-                                    </div>
-                                    <div className="text-right">
-                                        <p className="text-2xl font-bold text-blue-600">
-                                            ${car.pricePerDay}
-                                        </p>
-                                        <p className="text-gray-500 text-sm">per day</p>
-                                    </div>
-                                </div>
-
-                                <div className="grid grid-cols-2 gap-3 mb-4">
-                                    <div className="flex items-center gap-2 text-gray-600">
-                                        <FaUsers className="text-blue-500" />
-                                        <span className="text-sm">{car.seats} Seats</span>
-                                    </div>
-                                    <div className="flex items-center gap-2 text-gray-600">
-                                        {car.fuelType === "Electric" ? (
-                                            <MdElectricCar className="text-blue-500" />
-                                        ) : (
-                                            <FaGasPump className="text-blue-500" />
-                                        )}
-                                        <span className="text-sm">{car.fuelType}</span>
-                                    </div>
-                                    <div className="flex items-center gap-2 text-gray-600">
-                                        <GiGearStickPattern className="text-blue-500" />
-                                        <span className="text-sm">{car.transmission}</span>
-                                    </div>
-                                    <div className="flex items-center gap-2 text-gray-600">
-                                        <FaCog className="text-blue-500" />
-                                        <span className="text-sm">{car.year}</span>
-                                    </div>
-                                    <div className="flex items-center gap-2 text-gray-600 col-span-2">
-                                        <FaMapMarkerAlt className="text-blue-500" />
-                                        <span className="text-sm">{car.location}</span>
-                                    </div>
-                                </div>
-
-                                <Link
-                                    href={`/cars/${car.id}`}
-                                    className="block w-full text-center bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700 transition-colors duration-300"
-                                >
-                                    View Details
-                                </Link>
-                            </div>
-                        </div>
+                        <CarCard key={car?._id} car={car} />
                     ))}
                 </div>
 

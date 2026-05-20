@@ -14,7 +14,7 @@ import {
     FaTimesCircle,
 } from "react-icons/fa";
 import { toast, Toaster } from "react-hot-toast";
-import { authClient } from "@/lib/auth-client"; // Adjust path as needed
+import { authClient } from "@/lib/auth-client";
 
 export default function LoginPage() {
     const router = useRouter();
@@ -55,70 +55,74 @@ export default function LoginPage() {
         }
     };
 
-    // Handle login
-    const handleLogin = async (e) => {
-        e.preventDefault();
+    // Unified authentication function
+    const authenticateUser = async (provider, credentials = null) => {
         setLoading(true);
 
-        const formData = new FormData(e.target);
-        const loginData = Object.fromEntries(formData.entries());
-
-        // Validate password before submitting
-        const isValidPassword = validatePasswordStrength(loginData.password);
-        if (!isValidPassword) {
-            toast.error("Password does not meet the requirements. Please check the password criteria.");
-            setLoading(false);
-            return;
-        }
-
         try {
-            const { data, error } = await authClient.signIn.email({
-                ...loginData,
-                callbackURL: `${window.location.origin}/`,
-            });
+            let result;
+
+            if (provider === "email" && credentials) {
+                // Email/Password login
+                result = await authClient.signIn.email({
+                    email: credentials.email,
+                    password: credentials.password,
+                    callbackURL: `${window.location.origin}/`,
+                });
+            } else if (provider === "google") {
+                // Google login
+                result = await authClient.signIn.social({
+                    provider: "google",
+                    callbackURL: `${window.location.origin}/`,
+                });
+            } else {
+                throw new Error("Invalid authentication provider");
+            }
+
+            const { data, error } = result;
 
             if (error) {
-                toast.error(error.message || "Login failed. Please try again.");
+                toast.error(error.message || `${provider} login failed. Please try again.`);
                 setLoading(false);
-            } else {
-                toast.success("Login successful! Redirecting...");
-                setTimeout(() => {
-                    router.push("/");
-                }, 1500);
+                return false;
             }
+
+            toast.success(`${provider === "email" ? "Login" : "Google login"} successful! Redirecting...`);
+            setTimeout(() => {
+                router.push("/");
+            }, 1500);
+            return true;
+
         } catch (err) {
             toast.error("An error occurred. Please try again.");
             setLoading(false);
+            return false;
         }
+    };
+
+    // Handle email login
+    const handleLogin = async (e) => {
+        e.preventDefault();
+
+        const formData = new FormData(e.target);
+        const loginData = {
+            email: formData.get("email"),
+            password: formData.get("password"),
+        };
+
+        // Validate password
+        const isValidPassword = validatePasswordStrength(loginData.password);
+        if (!isValidPassword) {
+            toast.error("Password does not meet the requirements. Please check the password criteria.");
+            return;
+        }
+
+        await authenticateUser("email", loginData);
     };
 
     // Handle Google login
     const handleGoogleLogin = async () => {
-        setLoading(true);
-
-        try {
-            const { data, error } = await authClient.signIn.social({
-                provider: "google",
-                callbackURL: `${window.location.origin}/`,
-            });
-
-            if (error) {
-                toast.error(error.message || "Google login failed. Please try again.");
-                setLoading(false);
-            }
-            // On success, the user will be redirected by the auth client
-        } catch (err) {
-            toast.error("An error occurred. Please try again.");
-            setLoading(false);
-        }
-
-        if (success) {
-            localStorage.setItem("authToken", response.token);
-            localStorage.setItem("userName", response.user.name);
-            localStorage.setItem("userEmail", response.user.email);
-
-            window.dispatchEvent(new Event("storage"));
-        }
+        await authenticateUser("google");
     };
 
     return (
@@ -148,7 +152,7 @@ export default function LoginPage() {
                 }}
             />
 
-            <div className="min-h-screen bg-linear-to-br from-blue-50 to-indigo-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+            <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
                 <div className="max-w-md w-full space-y-8">
                     {/* Logo/Brand */}
                     <div className="text-center">
