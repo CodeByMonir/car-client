@@ -55,7 +55,7 @@ export default function LoginPage() {
         }
     };
 
-    // Unified authentication function
+
     const authenticateUser = async (provider, credentials = null) => {
         setLoading(true);
 
@@ -63,14 +63,14 @@ export default function LoginPage() {
             let result;
 
             if (provider === "email" && credentials) {
-                // Email/Password login
+
                 result = await authClient.signIn.email({
                     email: credentials.email,
                     password: credentials.password,
                     callbackURL: `${window.location.origin}/`,
                 });
             } else if (provider === "google") {
-                // Google login
+
                 result = await authClient.signIn.social({
                     provider: "google",
                     callbackURL: `${window.location.origin}/`,
@@ -83,6 +83,20 @@ export default function LoginPage() {
 
             if (error) {
                 toast.error(error.message || `${provider} login failed. Please try again.`);
+                setLoading(false);
+                return false;
+            }
+
+            // Verify token was created successfully
+            try {
+                const { data: tokenData, error: tokenError } = await authClient.token();
+                if (tokenError || !tokenData) {
+                    throw new Error("Failed to retrieve authentication token");
+                }
+                console.log("Token retrieved successfully", tokenData);
+            } catch (tokenErr) {
+                console.error("Token retrieval error:", tokenErr);
+                toast.error("Authentication token error. Please try again.");
                 setLoading(false);
                 return false;
             }
@@ -100,7 +114,7 @@ export default function LoginPage() {
         }
     };
 
-    // Handle email login
+
     const handleLogin = async (e) => {
         e.preventDefault();
 
@@ -110,7 +124,7 @@ export default function LoginPage() {
             password: formData.get("password"),
         };
 
-        // Validate password
+
         const isValidPassword = validatePasswordStrength(loginData.password);
         if (!isValidPassword) {
             toast.error("Password does not meet the requirements. Please check the password criteria.");
@@ -118,9 +132,10 @@ export default function LoginPage() {
         }
 
         await authenticateUser("email", loginData);
+
     };
 
-    // Handle Google login
+
     const handleGoogleLogin = async () => {
         await authenticateUser("google");
     };

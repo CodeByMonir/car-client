@@ -71,6 +71,15 @@ export default function RegisterPage() {
         setPhotoPreview(url);
     };
 
+    // Sign out function
+    const signOutUser = async () => {
+        try {
+            await authClient.signOut();
+        } catch (err) {
+            console.error("Error signing out:", err);
+        }
+    };
+
     // Unified registration function
     const registerUser = async (provider, userData = null) => {
         setLoading(true);
@@ -91,7 +100,7 @@ export default function RegisterPage() {
                 // Google registration
                 result = await authClient.signIn.social({
                     provider: "google",
-                    callbackURL: `${window.location.origin}/`,
+                    callbackURL: `${window.location.origin}/login`,
                 });
             } else {
                 throw new Error("Invalid registration provider");
@@ -105,8 +114,13 @@ export default function RegisterPage() {
                 return false;
             }
 
-            if (provider === "email") {
+            if (provider === "google" || provider === "email") {
                 toast.success("Registration successful! Redirecting to login page...");
+
+                // Sign out if user was automatically logged in
+                await signOutUser();
+
+                // Redirect to login page
                 setTimeout(() => {
                     router.push("/login");
                 }, 1500);
@@ -309,7 +323,7 @@ export default function RegisterPage() {
                                     </button>
                                 </div>
 
-                                {/* Password Validation Requirements (same as login) */}
+                                {/* Password Validation Requirements */}
                                 <div className="mt-2 space-y-1">
                                     <div className="flex items-center gap-2 text-xs">
                                         {passwordValidation.hasMinLength ? (
@@ -370,7 +384,7 @@ export default function RegisterPage() {
                                 </div>
                             </div>
 
-                            {/* Google Register Button (mirrors login) */}
+                            {/* Google Register Button */}
                             <button
                                 type="button"
                                 onClick={() => registerUser("google")}
@@ -395,7 +409,7 @@ export default function RegisterPage() {
                             </div>
                         </form>
 
-                        {/* Password Requirements Summary (same as login) */}
+                        {/* Password Requirements Summary */}
                         <div className="mt-6 p-4 bg-yellow-50 rounded-lg border border-yellow-200">
                             <p className="text-xs text-yellow-800">
                                 <span className="font-semibold">Password Requirements:</span><br />

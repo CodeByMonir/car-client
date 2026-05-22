@@ -38,8 +38,8 @@ export default function Navbar() {
 
     const isActive = (path) => pathname === path;
 
-    // Show loading state while checking session (only after hydration to prevent mismatch)
-    if (isPending && isHydrated) {
+    // Show loading state while checking session or before hydration to prevent mismatch
+    if (!isHydrated || isPending) {
         return (
             <nav className="bg-white shadow-lg w-full">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
