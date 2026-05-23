@@ -27,28 +27,34 @@ import {
 } from "react-icons/fa";
 import { GiGearStickPattern, GiCarDoor } from "react-icons/gi";
 import { MdElectricCar, MdLocalGasStation } from "react-icons/md";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 
-const getCar = async (carId) => {
+const getCar = async (carId, token) => {
     try {
         const apiUrl = `${process.env.NEXT_PUBLIC_API}/cars/${carId}`;
-        console.log('Fetching from:', apiUrl);
-        const res = await fetch(apiUrl);
+        const res = await fetch(apiUrl, {
+            headers: {
+                'Authorization': `Bearer ${token} || ""`,
+                'Content-Type': 'application/json',
+            }
+        });
         if (!res.ok) {
-            console.error(`API error: ${res.status}`);
             return null;
         }
         const data = await res.json();
-        console.log('Car data received:', data);
         return data || null;
     } catch (error) {
-        console.error('Error fetching car:', error);
         return null;
     }
 }
 
 export default async function CarDetailsPage({ params }) {
     const { carId } = await params;
-    const car = await getCar(carId);
+    const { token } = await auth.api.getToken({
+        headers: await headers(),
+    });
+    const car = await getCar(carId, token);
 
     if (!car) {
         notFound();

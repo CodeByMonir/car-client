@@ -93,9 +93,7 @@ export default function LoginPage() {
                 if (tokenError || !tokenData) {
                     throw new Error("Failed to retrieve authentication token");
                 }
-                console.log("Token retrieved successfully", tokenData);
             } catch (tokenErr) {
-                console.error("Token retrieval error:", tokenErr);
                 toast.error("Authentication token error. Please try again.");
                 setLoading(false);
                 return false;

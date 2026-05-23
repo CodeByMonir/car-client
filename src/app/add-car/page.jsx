@@ -172,7 +172,6 @@ export default function AddCarPage() {
                 toast.error(error.message || "Failed to add car. Please try again.");
             }
         } catch (error) {
-            console.error("Error adding car:", error);
             toast.error("An error occurred. Please try again.");
         } finally {
             setLoading(false);

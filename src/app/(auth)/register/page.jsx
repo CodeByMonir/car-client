@@ -76,7 +76,6 @@ export default function RegisterPage() {
         try {
             await authClient.signOut();
         } catch (err) {
-            console.error("Error signing out:", err);
         }
     };
 
